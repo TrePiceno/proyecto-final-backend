@@ -18,6 +18,8 @@
 - [Vistas](#vistas)
 - [Modelos de datos](#modelos-de-datos)
 - [API REST](#api-rest)
+  - [API de Productos](#api-de-productos)
+  - [API de Carritos](#api-de-carritos)
 - [Contribuciones](#contribuciones)
 
 ## 📝 Descripción
@@ -66,7 +68,7 @@ src/
 1. Clona el repositorio:
 
 ```bash
-git clone <url-del-repositorio>
+git clone https://github.com/TrePiceno/proyecto-final-backend
 cd proyecto-final-backend
 ```
 
@@ -88,7 +90,7 @@ MONGODB_URI=mongodb://localhost:27017/ecommerce
 4. Inicia la aplicación:
 
 ```bash
-npm start
+node ".\src\app.js"
 ```
 
 ## 🔍 Uso
@@ -113,6 +115,7 @@ Una vez iniciada la aplicación, puedes acceder a ella a través de tu navegador
 - **GET /api/product/:id** - Obtener un producto específico
 - **POST /api/product** - Crear un nuevo producto
 - **PUT /api/product/:id** - Actualizar un producto existente
+- **PUT /api/product** - Actualizar todos los productos
 - **DELETE /api/product/:id** - Eliminar un producto
 
 ## 🛠️ Funcionalidades
@@ -185,23 +188,46 @@ Una vista personalizada que se muestra cuando ocurre un error, proporcionando:
 }
 ```
 
+### Carrito
+
+```javascript
+{
+  products: [
+    {
+      product: ObjectId, // Referencia al ID del producto
+      quantity: Number, // Cantidad del producto en el carrito
+    },
+  ];
+}
+```
+
 ## 🔌 API REST
 
-La aplicación incluye una API RESTful para interactuar con los productos:
+La aplicación incluye APIs RESTful para interactuar con productos y carritos:
 
-### Obtener todos los productos
+### API de Productos
+
+#### Obtener todos los productos
 
 ```
 GET /api/product
 ```
 
-### Obtener un producto específico
+**Respuesta**: Lista paginada de productos con metadatos de paginación.
+
+#### Obtener un producto específico
 
 ```
-GET /api/product/:id
+GET /api/product/:pid
 ```
 
-### Crear un nuevo producto
+**Parámetros**:
+
+- `pid`: ID del producto
+
+**Respuesta**: Detalles del producto solicitado.
+
+#### Crear un nuevo producto
 
 ```
 POST /api/product
@@ -217,10 +243,14 @@ Content-Type: application/json
 }
 ```
 
-### Actualizar un producto
+**Cuerpo**: Datos del producto a crear.
+
+**Respuesta**: Producto creado con su ID generado.
+
+#### Actualizar un producto específico
 
 ```
-PUT /api/product/:id
+PUT /api/product/:pid
 Content-Type: application/json
 
 {
@@ -229,11 +259,147 @@ Content-Type: application/json
 }
 ```
 
-### Eliminar un producto
+**Parámetros**:
+
+- `pid`: ID del producto a actualizar
+
+**Cuerpo**: Campos a actualizar.
+
+**Respuesta**: Producto actualizado.
+
+#### Actualizar todos los productos
 
 ```
-DELETE /api/product/:id
+PUT /api/product
+Content-Type: application/json
+
+{
+  "price": 100
+}
 ```
+
+**Cuerpo**: Campos a actualizar en todos los productos.
+
+**Respuesta**: Resultado de la operación de actualización masiva.
+
+#### Eliminar un producto
+
+```
+DELETE /api/product/:pid
+```
+
+**Parámetros**:
+
+- `pid`: ID del producto a eliminar
+
+**Respuesta**: Producto eliminado.
+
+### API de Carritos
+
+#### Crear un nuevo carrito
+
+```
+POST /api/cart
+Content-Type: application/json
+
+{
+  "products": [
+    {
+      "product": "6421a3a48c3d1f4d15e4d6a9",
+      "quantity": 2
+    }
+  ]
+}
+```
+
+**Cuerpo**: (Opcional) Lista inicial de productos para el carrito.
+
+**Respuesta**: Carrito creado con su ID generado.
+
+#### Obtener un carrito específico
+
+```
+GET /api/cart/:cid
+```
+
+**Parámetros**:
+
+- `cid`: ID del carrito
+
+**Respuesta**: Detalles del carrito con sus productos.
+
+#### Actualizar la cantidad de un producto en el carrito
+
+```
+PUT /api/cart/:cid/product/:pid
+Content-Type: application/json
+
+{
+  "quantity": 5
+}
+```
+
+**Parámetros**:
+
+- `cid`: ID del carrito
+- `pid`: ID del producto
+
+**Cuerpo**: Nueva cantidad del producto.
+
+**Respuesta**: Carrito actualizado.
+
+#### Añadir múltiples productos al carrito
+
+```
+PUT /api/cart/:cid
+Content-Type: application/json
+
+{
+  "products": [
+    {
+      "product": "6421a3a48c3d1f4d15e4d6a9",
+      "quantity": 1
+    },
+    {
+      "product": "6421a3a48c3d1f4d15e4d6b2",
+      "quantity": 3
+    }
+  ]
+}
+```
+
+**Parámetros**:
+
+- `cid`: ID del carrito
+
+**Cuerpo**: Lista de productos a añadir.
+
+**Respuesta**: Carrito actualizado.
+
+#### Eliminar un producto del carrito
+
+```
+DELETE /api/cart/:cid/product/:pid
+```
+
+**Parámetros**:
+
+- `cid`: ID del carrito
+- `pid`: ID del producto a eliminar
+
+**Respuesta**: Carrito actualizado sin el producto eliminado.
+
+#### Vaciar el carrito
+
+```
+DELETE /api/cart/:cid
+```
+
+**Parámetros**:
+
+- `cid`: ID del carrito a vaciar
+
+**Respuesta**: Carrito vacío.
 
 ## 👥 Contribuciones
 

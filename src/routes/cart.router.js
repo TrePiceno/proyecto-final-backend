@@ -24,7 +24,7 @@ router.get('/:cid', async (req, res) => {
     }
 });
 
-router.put ('/cid/product/:pid', async (req, res) => {
+router.put('/:cid/product/:pid', async (req, res) => {
     try {
         const cartId = req.params.cid;
         const productId = req.params.pid;
@@ -32,17 +32,32 @@ router.put ('/cid/product/:pid', async (req, res) => {
         const cart = await cartModel.findById(cartId);
         const productIndex = cart.products.findIndex(product => product.product.toString() === productId);
         if (productIndex !== -1) {
-            cart.products[productIndex].quantity += quantity;
+            cart.products[productIndex].quantity = quantity;
+            await cart.save();
+            res.status(200).send(cart);
         } else {
-            cart.products.push({ product: productId, quantity });
+            res.status(404).send('Producto no encontrado en el carrito');
         }
-        await cart.save();
-        res.status(200).send(cart);
     } catch (error) {
         console.error('Error al actualizar el carrito:', error);
         res.status(500).send('Error al actualizar el carrito');
     }
 });
+
+router.put('/:cid', async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+        const products = req.body.products;
+        const cart = await cartModel.findById(cartId);
+        cart.products.push(...products);
+        await cart.save();
+        res.status(200).send(cart);
+    } catch (error) {
+        console.error('Error al agregar productos al carrito:', error);
+        res.status(500).send('Error al agregar productos al carrito');
+    }
+});
+
 
 router.delete('/:cid/product/:pid', async (req, res) => {
     try {
