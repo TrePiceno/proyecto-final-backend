@@ -1,0 +1,88 @@
+<div class="container">
+  <header class="page-header">
+    <h1>Catálogo de Productos</h1>
+    <a href="/" class="btn-back"><i class="fas fa-arrow-left"></i>
+      Volver al inicio</a>
+  </header>
+
+  <div class="products-container">
+    <aside class="sidebar">
+      <div class="card">
+        <div class="pagination-info">
+          <h3>Página {{prod.page}} de {{prod.totalPages}}</h3>
+          <p>Mostrando {{prod.docs.length}} de {{prod.totalDocs}} productos</p>
+
+          <div class="pagination-controls">
+            {{#if prod.hasPrevPage}}
+              <a
+                href="/products?page={{prod.prevPage}}"
+                class="pagination-btn prev-btn"
+              >
+                <i class="fas fa-chevron-left"></i>
+                Anterior
+              </a>
+            {{else}}
+              <button class="pagination-btn prev-btn disabled">
+                <i class="fas fa-chevron-left"></i>
+                Anterior
+              </button>
+            {{/if}}
+
+            {{#if prod.hasNextPage}}
+              <a
+                href="/products?page={{prod.nextPage}}"
+                class="pagination-btn next-btn"
+              >
+                Siguiente
+                <i class="fas fa-chevron-right"></i>
+              </a>
+            {{else}}
+              <button class="pagination-btn next-btn disabled">
+                Siguiente
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div id="productos" class="products-grid">
+        {{#each prod.docs}}
+          <div class="product-card">
+            <div class="product-image">
+              <img
+                src="{{this.imageUrl}}"
+                alt="{{this.title}}"
+              />
+            </div>
+            <div class="product-header">
+              <h3 class="product-title">{{this.title}}</h3>
+              <span class="product-category">{{this.category}}</span>
+            </div>
+            <p class="product-description">{{this.description}}</p>
+            <div class="product-price">
+              <span class="currency">$</span>
+              <span class="amount">{{this.price}}</span>
+            </div>
+            <div class="product-actions">
+              <a href="/products/{{this._id}}" class="btn-detail">Ver detalles</a>
+              <button class="btn-add-cart" data-id="{{this._id}}">
+                <i class="fas fa-shopping-cart"></i>
+                Agregar
+              </button>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </main>
+  </div>
+</div>
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+  integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
